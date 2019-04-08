@@ -1,0 +1,11 @@
+# file
+*.log
+*.temp
+*.class
+
+# java project
+.classpath
+.project 
+/.settings
+/target
+
