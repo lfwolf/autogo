@@ -74,7 +74,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- 依赖包复制到target  -->
+			<!-- 依赖包复制到target -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -113,6 +113,16 @@
 								<resource>
 									<directory>src/main/resources</directory>
 									<filtering>true</filtering>
+									<excludes>
+										<exclude>config/**</exclude>
+									</excludes>
+								</resource>
+								<resource>
+									<!-- 打包文件所在的路径，profiles.active就是profiles里面生效的路径 -->
+									<directory>src/main/resources/config/${profiles.active}
+									</directory>
+									<!-- 可有可无 -->
+									<targetPath>./config</targetPath>
 								</resource>
 							</resources>
 						</configuration>
@@ -126,6 +136,7 @@
 				<filtering>true</filtering>
 				<directory>src/main/resources</directory>
 				<excludes>
+					<exclude>config/**</exclude>
 					<exclude>static/**</exclude>
 					<exclude>templates/**</exclude>
 					<exclude>*.yml</exclude>
@@ -136,5 +147,22 @@
 			</resource>
 		</resources>
 	</build>
+	<profiles>
+		<profile>
+			<id>develop</id>
+			<properties>
+				<profiles.active>dev</profiles.active>
+			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
+		<profile>
+			<id>product</id>
+			<properties>
+				<profiles.active>prod</profiles.active>
+			</properties>
+		</profile>
+	</profiles>
 
 </project>
