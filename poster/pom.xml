@@ -108,13 +108,14 @@
 						</goals>
 						<configuration>
 							<encoding>UTF-8</encoding>
-							<outputDirectory>${basedir}/target</outputDirectory>
+							<outputDirectory>${basedir}/target/classes</outputDirectory>
 							<resources>
 								<resource>
 									<directory>src/main/resources</directory>
 									<filtering>true</filtering>
 									<excludes>
 										<exclude>config/**</exclude>
+										<exclude>*.properties</exclude>
 									</excludes>
 								</resource>
 								<resource>
@@ -130,22 +131,22 @@
 				</executions>
 			</plugin>
 		</plugins>
-		<!-- 打包排除资源文件 -->
+		<!-- 打包资源文件 -->
 		<resources>
 			<resource>
 				<filtering>true</filtering>
 				<directory>src/main/resources</directory>
-				<excludes>
+				<excludes>			
+					<!-- 排除后ide里启动无法找到templages目录，但控制台启动正常
 					<exclude>config/**</exclude>
-					<exclude>static/**</exclude>
 					<exclude>templates/**</exclude>
-					<exclude>*.yml</exclude>
-					<exclude>*.properties</exclude>
-					<exclude>*.xml</exclude>
-					<exclude>*.txt</exclude>
+					<exclude>static/**</exclude>
+					-->
 				</excludes>
 			</resource>
 		</resources>
+		
+		
 	</build>
 	<profiles>
 		<profile>
