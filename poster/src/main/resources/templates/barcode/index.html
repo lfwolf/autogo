@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<!--名称空间-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<title>welcome to barcode.</title>
+<link rel="stylesheet" href="../css/index.css"></script>
+<body>
+<br/>
+<span th:text="${barcode}" />
+
+
+<div  th:each="img,imgStat:${imgs}">
+	<span th:text="${codenames[imgStat.index]}" />
+	<div class="barcode">
+	<span th:text="${textup}"></span>
+	<img th:src="|data:image/png;base64,${img}|"/>
+	<span th:text="'GREE ' + ${barcode}" />
+	<div>
+	<img th:src="${imgsrc}" />
+	</div>
+</div>
+</div>
+</body>
+</html>
