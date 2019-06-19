@@ -65,15 +65,21 @@ public class BarcodeController {
 			int height = 30;
 			Font font = new Font("817-CAI978", Font.TRUETYPE_FONT, 28);
 			
-			//添加文字
+			 //设置透明  start
+			
+			//添加文字  
 			BufferedImage bi = creater.toBufferedImage(barcode);
 			Graphics2D g2 = (Graphics2D) bi.getGraphics();
+			//设置透明背景
+			//bi = g2.getDeviceConfiguration().createCompatibleImage(bi.getWidth(), bi.getWidth(), Transparency.TRANSLUCENT);  
+			//g2=bi.createGraphics();  
 			//替换背景颜色
 			int[] rgb = new int[3];
 			int width1 = bi.getWidth();
 			int height1 = bi.getHeight();
 			int minx = bi.getMinTileX();
 			int miny = bi.getMinTileY();
+			width= width1;
 			/*
 			 * 遍历像素点，判断是否更换颜色
 			 * */
@@ -93,12 +99,25 @@ public class BarcodeController {
 				}
 			}
             Color bgcolor = new Color(182,181,194);
-			Color bgcolor2 = new Color(197,197,207);
+			Color bgcolor2 = new Color(201,201,211);
+			clearRect(width, height, g2, bgcolor2, 0);
+			/*
+			for(int i =1; i<= 16 ; i++) {
+				if (i == 16) {
+					g2.setBackground(bgcolor2);
+				}else {
+					g2.setBackground(new Color(182 + i,181+i,194 +i));
+				}
+				int start = width*(i-1)/16 ;
+				g2.clearRect(start, 0, width*1/16+5, height);
+			}
+			*/
+			/*
 			g2.setBackground(bgcolor);
 			g2.clearRect(0, 0, width-width/2, height);
 			g2.setBackground(bgcolor2);
 			g2.clearRect(width-width/2, 0, width-width/2, height);
-			
+			*/
 			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
 			g2.setFont(font);
 			g2.setPaint(Color.BLACK);
@@ -107,8 +126,9 @@ public class BarcodeController {
 			
 			
 			int posy= bi.getHeight()*3/4+5;
-			g2.setPaint(bgcolor);
-			g2.fillRect(0, posy, bi.getWidth(), bi.getHeight()*1/4);
+			//g2.setPaint(bgcolor);
+			//g2.fillRect(0, posy, bi.getWidth(), bi.getHeight()*1/4);
+			clearRect(width, height, g2, bgcolor2, posy);
 			g2.setPaint(Color.BLACK);
 			g2.drawString(TEXTDown + barcode, 15, posy+20);
 			g2.dispose();
@@ -117,7 +137,7 @@ public class BarcodeController {
 			} catch (IOException ee) {
 				ee.printStackTrace();
 			}
-			
+ 
 			//合并图片
 			File bgfile = new File(rootLocation +"/bg1.jpeg") ;
 			BufferedImage big = ImageIO.read(bgfile);
@@ -145,6 +165,18 @@ public class BarcodeController {
 		}
 
 		return suffix + "/index";
+	}
+
+	private void clearRect(int width, int height, Graphics2D g2, Color bgcolor2, int posy) {
+		for(int i =1; i<= 16 ; i++) {
+			if (i == 16) {
+				g2.setBackground(bgcolor2);
+			}else {
+				g2.setBackground(new Color(182 + i,181+i,194 +i));
+			}
+			int start = width*(i-1)/16 ;
+			g2.clearRect(start, posy, width*1/16+5, height);
+		}
 	}
 	
 	 public static void main(String[] args) {
