@@ -106,7 +106,7 @@ public class BarcodeController {
 			/*
 			 * 遍历像素点，判断是否更换颜色
 			 * */
-			Color startcolor = new Color(182,181,194);
+			Color startcolor = new Color(176,178,191);
 			Color endcolor = new Color(200,200,212);
 			int range = 20;
 			int step_r = (endcolor.getRed() - startcolor.getRed())/ range;
