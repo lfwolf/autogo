@@ -73,6 +73,29 @@ public class BarcodeController {
 			//设置透明背景
 			//bi = g2.getDeviceConfiguration().createCompatibleImage(bi.getWidth(), bi.getWidth(), Transparency.TRANSLUCENT);  
 			//g2=bi.createGraphics();  
+			
+			g2.setPaint(Color.WHITE);
+			g2.fillRect(0, 0, bi.getWidth(), bi.getHeight()*1/4);
+
+            //Color bgcolor = new Color(182,181,194);
+			//Color bgcolor2 = new Color(201,201,211);
+			
+			//clearRect(width, height, g2, bgcolor2, 0);
+
+			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+			g2.setFont(font);
+			g2.setPaint(Color.BLACK);
+			g2.drawString(TEXTUp, 15, 25);
+			
+			
+			
+			int posy= bi.getHeight()*3/4+5;
+			g2.setPaint(Color.WHITE);
+			g2.fillRect(0, posy, bi.getWidth(), bi.getHeight()*1/4);
+			//clearRect(width, height, g2, bgcolor2, posy);
+			g2.setPaint(Color.BLACK);
+			g2.drawString(TEXTDown + barcode, 15, posy+20);
+			
 			//替换背景颜色
 			int[] rgb = new int[3];
 			int width1 = bi.getWidth();
@@ -83,7 +106,38 @@ public class BarcodeController {
 			/*
 			 * 遍历像素点，判断是否更换颜色
 			 * */
+			Color startcolor = new Color(182,181,194);
+			Color endcolor = new Color(200,200,212);
+			int range = 20;
+			int step_r = (endcolor.getRed() - startcolor.getRed())/ range;
+			int step_g = (endcolor.getGreen() - startcolor.getGreen())/range ;
+			int step_b = (endcolor.getBlue() - startcolor.getBlue())/range ;
+			int step_area = (width1 - minx)/range;
+			int count = 0;
+			step_r = step_r == 0 ? 1 : step_r;
+			step_g = step_g == 0 ? 1 : step_g;
+			step_b = step_b == 0 ? 1 : step_b;
+			logger.info("step/r/g/b:" + step_r + "/" + step_g + "/"+ step_b);
+			logger.info("step_area/width1/minx:" + step_area + "/" + width1 + "/"+ minx);
 			for (int i = minx; i < width1; i++) {
+				
+				count++;
+				int step = count / step_area;
+		 		int r = startcolor.getRed() + step_r*step;
+		 		int g = startcolor.getGreen() + step_g*step;
+		 		int b = startcolor.getBlue() + step_b*step;
+		 		//最后2个区域设置为结束色。
+		 		/*
+		 		if( step >= range -1) {
+		 			r = endcolor.getRed();
+		 			g = endcolor.getGreen();
+		 			b = endcolor.getBlue();
+		 		}
+		 		*/
+		 		
+		 		
+		 		logger.info("step/r/g/b:" + step + "/"+ r + "/"+ g + "/" + b);
+		 		
 				for (int j = miny; j < height1; j++) {
 					/*
 					 * 换色
@@ -94,43 +148,13 @@ public class BarcodeController {
 				 	rgb[2] = (pixel & 0xff) ;
 				 	
 				 	if (rgb[0]>200 && rgb[1]>200 && rgb[2]>200) {
-						bi.setRGB(i, j, 0xBABCC8);
+				 		int bgcolor = ((0xFF << 24)|(r << 16)|(g << 8)|b);
+						bi.setRGB(i, j, bgcolor);
+					
 					}
 				}
 			}
-            Color bgcolor = new Color(182,181,194);
-			Color bgcolor2 = new Color(201,201,211);
-			clearRect(width, height, g2, bgcolor2, 0);
-			/*
-			for(int i =1; i<= 16 ; i++) {
-				if (i == 16) {
-					g2.setBackground(bgcolor2);
-				}else {
-					g2.setBackground(new Color(182 + i,181+i,194 +i));
-				}
-				int start = width*(i-1)/16 ;
-				g2.clearRect(start, 0, width*1/16+5, height);
-			}
-			*/
-			/*
-			g2.setBackground(bgcolor);
-			g2.clearRect(0, 0, width-width/2, height);
-			g2.setBackground(bgcolor2);
-			g2.clearRect(width-width/2, 0, width-width/2, height);
-			*/
-			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
-			g2.setFont(font);
-			g2.setPaint(Color.BLACK);
-			g2.drawString(TEXTUp, 15, 25);
 			
-			
-			
-			int posy= bi.getHeight()*3/4+5;
-			//g2.setPaint(bgcolor);
-			//g2.fillRect(0, posy, bi.getWidth(), bi.getHeight()*1/4);
-			clearRect(width, height, g2, bgcolor2, posy);
-			g2.setPaint(Color.BLACK);
-			g2.drawString(TEXTDown + barcode, 15, posy+20);
 			g2.dispose();
 			try {
 				ImageIO.write(bi, "png", f);
