@@ -2,6 +2,7 @@
 *.log
 *.temp
 *.class
+*.png
 
 # java project
 .classpath

@@ -31,19 +31,19 @@ import sz.fengzfeng.utils.BarcodeCreater.BarcodeEncoder;
 
 @Controller
 @RequestMapping("/barcode")
-public class BarcodeController {
+public class BarcodeController2 {
 	protected String suffix = "barcode";
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@RequestMapping("/")
 	public String index(Model model) throws InvalidAtributeException, IOException {
-		String barcode = "6381594026991";
+		String barcode = "4P11796048839";
 		List<String> imgs = new ArrayList<String>();
 		List<String> codenames = new ArrayList<String>();
 
 		BarcodeCreater creater = new BarcodeCreater();
 		creater.setDefaultSize();
-		String TEXTUp = "KF-35G(35392)/NhAa-3";
+		String TEXTUp = "KF-35W/FNhV11-A1";
 	    String TEXTDown = "GREE  ";
 		for (BarcodeEncoder e : BarcodeEncoder.values()) {
 			if( e != BarcodeEncoder.Code93)continue;
@@ -61,8 +61,6 @@ public class BarcodeController {
 			//creater.write(barcode, f);
 			
 		    
-			int width = 527;
-			int height = 30;
 			Font font = new Font("817-CAI978", Font.TRUETYPE_FONT, 28);
 			
 			 //设置透明  start
@@ -102,21 +100,22 @@ public class BarcodeController {
 			int height1 = bi.getHeight();
 			int minx = bi.getMinTileX();
 			int miny = bi.getMinTileY();
-			width= width1;
+			
 			/*
 			 * 遍历像素点，判断是否更换颜色
 			 * */
-			Color startcolor = new Color(176,178,191);
-			Color endcolor = new Color(200,200,212);
+			Color startcolor = new Color(219,219,219);
+			Color endcolor = new Color(217,217,217);
 			int range = 20;
 			int step_r = (endcolor.getRed() - startcolor.getRed())/ range;
 			int step_g = (endcolor.getGreen() - startcolor.getGreen())/range ;
 			int step_b = (endcolor.getBlue() - startcolor.getBlue())/range ;
 			int step_area = (width1 - minx)/range;
 			int count = 0;
-			step_r = step_r == 0 ? 1 : step_r;
-			step_g = step_g == 0 ? 1 : step_g;
-			step_b = step_b == 0 ? 1 : step_b;
+			step_r = step_r > 0 && step_r < 1 ? 1 : step_r;
+			step_g = step_g > 0 && step_g < 1 ? 1 : step_g;
+			step_b = step_b > 0 && step_b < 1 ? 1 : step_b;
+			step_r = step_g = step_b = 0;
 			logger.info("step/r/g/b:" + step_r + "/" + step_g + "/"+ step_b);
 			logger.info("step_area/width1/minx:" + step_area + "/" + width1 + "/"+ minx);
 			for (int i = minx; i < width1; i++) {
@@ -127,13 +126,13 @@ public class BarcodeController {
 		 		int g = startcolor.getGreen() + step_g*step;
 		 		int b = startcolor.getBlue() + step_b*step;
 		 		//最后2个区域设置为结束色。
-		 		/*
+		 		
 		 		if( step >= range -1) {
 		 			r = endcolor.getRed();
 		 			g = endcolor.getGreen();
 		 			b = endcolor.getBlue();
 		 		}
-		 		*/
+		 		
 		 		
 		 		
 		 		logger.info("step/r/g/b:" + step + "/"+ r + "/"+ g + "/" + b);
@@ -163,15 +162,15 @@ public class BarcodeController {
 			}
  
 			//合并图片
-			File bgfile = new File(rootLocation +"/bg1.jpeg") ;
+			File bgfile = new File(rootLocation +"/bg2.jpeg") ;
 			BufferedImage big = ImageIO.read(bgfile);
 			//int bgwidth = big.getWidth();
 			//int bgheight = big.getHeight();
 			Graphics2D g = big.createGraphics();
-			g.shear(0, -0.024);// 倾斜图像
-			g.drawImage(bi,580,850,bi.getWidth()+30,bi.getHeight()+35,null);
+			g.shear(0, +0.024);// 倾斜图像
+			g.drawImage(bi,370,500,bi.getWidth()+30,bi.getHeight()+35,null);
 			g.dispose();
-			ImageIO.write(big, "png", new File(rootLocation + "/merge.png"));
+			ImageIO.write(big, "png", new File(rootLocation + "/merge2.png"));
 			
 			String code = creater.toBase64(barcode);
 			if (code != null) {
@@ -190,23 +189,11 @@ public class BarcodeController {
 
 		return suffix + "/index";
 	}
-
-	private void clearRect(int width, int height, Graphics2D g2, Color bgcolor2, int posy) {
-		for(int i =1; i<= 16 ; i++) {
-			if (i == 16) {
-				g2.setBackground(bgcolor2);
-			}else {
-				g2.setBackground(new Color(182 + i,181+i,194 +i));
-			}
-			int start = width*(i-1)/16 ;
-			g2.clearRect(start, posy, width*1/16+5, height);
-		}
-	}
 	
 	 public static void main(String[] args) {
 		try {
 			
-			new BarcodeController().index( null);
+			new BarcodeController2().index( null);
 			System.out.println("done.");
 		} catch (InvalidAtributeException | IOException e) {
 			// TODO Auto-generated catch block
