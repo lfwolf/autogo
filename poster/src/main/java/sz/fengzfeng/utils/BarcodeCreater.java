@@ -111,9 +111,9 @@ public class BarcodeCreater {
 	
 	public void setDefaultSize() throws InvalidAtributeException {
         // 尺寸，面积，大小
-		barcode.setXDimension(Double.valueOf(0.55).doubleValue());
+		barcode.setXDimension(Double.valueOf(0.65).doubleValue());
 		// 高度 10.0 = 1cm 默认1.5cm
-		barcode.setBarHeight(Double.valueOf(30).doubleValue());
+		barcode.setBarHeight(Double.valueOf(40).doubleValue());
         // 宽度率
 		barcode.setWideRatio(Double.valueOf(2.0).doubleValue());
 		barcode.setShowText(false);
