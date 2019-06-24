@@ -57,13 +57,14 @@ public class BarcodeController {
 		
 		BarcodeModel out = new BarcodeModel();
 		out.setText_up("KFR-26W/NB01-3");
-		out.setFontsize(28);
-		out.setReplace_start_x(460);
+		out.setFontsize(30);
+		out.setReplace_start_x(480);
 		out.setReplace_start_y(750);
 		out.setShear(0.025f);
 		out.setBgpath("/Users/lifeng/Documents/work/二维码项目/图片模版/20190624/bg2.jpg");
 		out.setBarcode(barcode);
 		out.setName("out");
+		out.setDimension(0.58d);
 		modelList.add(out);
 
 		modelList.forEach(m ->{
@@ -99,13 +100,14 @@ public class BarcodeController {
 		BarcodeModel demo = barcode;
 
 		BarcodeCreater creater = new BarcodeCreater();
-		creater.setDefaultSize();
+
 		String TEXTUp = demo.getText_up();
 	    String TEXTDown = demo.getText_down();
 		for (BarcodeEncoder e : BarcodeEncoder.values()) {
 			if( e != BarcodeEncoder.Code93)continue;
 			creater.setEncoder(e);
-			creater.setDefaultSize();
+			creater.setDefaultSize(barcode.getDimension(),barcode.getBarheight(),barcode.getWraido());
+			
 			
 			//文件目录
 	        Path rootLocation = Paths.get("src/main/resources/static/images");

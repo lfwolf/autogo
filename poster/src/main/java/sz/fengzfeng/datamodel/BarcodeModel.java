@@ -5,6 +5,9 @@ public class BarcodeModel {
 	public BarcodeModel() {
 		this.setText_down("GREE  ");
 		this.setFontsize(33);
+		this.setDimension(0.65d);
+		this.setBarheight(40d);
+		this.setWraido(2.0d);
 	}
 	private String name;
 	private int replace_start_x;
@@ -15,6 +18,11 @@ public class BarcodeModel {
 	private float shear;
 	private String bgpath;
 	private int fontsize ;
+	
+	private double wraido;
+	private double barheight;
+	private double dimension;
+	
 	public int getReplace_start_x() {
 		return replace_start_x;
 	}
@@ -68,6 +76,24 @@ public class BarcodeModel {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public double getWraido() {
+		return wraido;
+	}
+	public void setWraido(double wraido) {
+		this.wraido = wraido;
+	}
+	public double getBarheight() {
+		return barheight;
+	}
+	public void setBarheight(double barheight) {
+		this.barheight = barheight;
+	}
+	public double getDimension() {
+		return dimension;
+	}
+	public void setDimension(double dimension) {
+		this.dimension = dimension;
 	}
 	
 }

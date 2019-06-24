@@ -108,8 +108,17 @@ public class BarcodeCreater {
 		return null;
 
 	}
-	
+	public void setDefaultSize(double dimension,double height,double wraido) throws InvalidAtributeException {
+        // 尺寸，面积，大小
+		barcode.setXDimension(dimension);
+		// 高度 10.0 = 1cm 默认1.5cm
+		barcode.setBarHeight(height);
+        // 宽度率
+		barcode.setWideRatio(wraido);
+		barcode.setShowText(false);
+	}
 	public void setDefaultSize() throws InvalidAtributeException {
+		//
         // 尺寸，面积，大小
 		barcode.setXDimension(Double.valueOf(0.65).doubleValue());
 		// 高度 10.0 = 1cm 默认1.5cm
