@@ -15,6 +15,21 @@
 	</parent>
 
 	<dependencies>
+	<!-- https://mvnrepository.com/artifact/net.sourceforge.htmlunit/htmlunit -->
+
+	
+	<!-- https://mvnrepository.com/artifact/com.google.zxing/core -->
+<dependency>
+    <groupId>com.google.zxing</groupId>
+    <artifactId>core</artifactId>
+    <version>3.3.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.google.zxing/javase -->
+<dependency>
+    <groupId>com.google.zxing</groupId>
+    <artifactId>javase</artifactId>
+    <version>3.3.0</version>
+</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -86,18 +101,35 @@
 					</includes>
 				</configuration>
 			</plugin>
+
+			<!-- 资源文件复制到target -->
 			<plugin>
-				<artifactId>maven-failsafe-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
 				<executions>
 					<execution>
+						<id>copy-resources</id>
+						<!-- here the phase you need -->
+						<phase>validate</phase>
 						<goals>
-							<goal>integration-test</goal>
-							<goal>verify</goal>
+							<goal>copy-resources</goal>
 						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<outputDirectory>${basedir}/target/</outputDirectory>
+							<resources>
+								<resource>
+									<!-- 打包文件所在的路径 -->
+									<directory>src/main/resources/config</directory>
+									<!-- 可有可无 -->
+									<targetPath>./config</targetPath>
+								</resource>
+							</resources>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-			<!-- 依赖包复制到target -->
+		<!-- 依赖包复制到target -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -113,42 +145,6 @@
 							<excludeTransitive>false</excludeTransitive>
 							<stripVersion>false</stripVersion>
 							<includeScope>runtime</includeScope>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<!-- 资源文件复制到target -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-resources</id>
-						<!-- here the phase you need -->
-						<phase>validate</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<encoding>UTF-8</encoding>
-							<outputDirectory>${basedir}/target/classes</outputDirectory>
-							<resources>
-								<resource>
-									<directory>src/main/resources</directory>
-									<filtering>true</filtering>
-									<excludes>
-										<exclude>config/**</exclude>
-										<exclude>*.properties</exclude>
-									</excludes>
-								</resource>
-								<resource>
-									<!-- 打包文件所在的路径，profiles.active就是profiles里面生效的路径 -->
-									<directory>src/main/resources/config/${profiles.active}
-									</directory>
-									<!-- 可有可无 -->
-									<targetPath>./config</targetPath>
-								</resource>
-							</resources>
 						</configuration>
 					</execution>
 				</executions>
