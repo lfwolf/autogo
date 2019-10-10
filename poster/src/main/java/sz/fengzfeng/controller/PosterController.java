@@ -96,6 +96,8 @@ public class PosterController {
         		Integer.parseInt(titleposArray[2])};
     	logger.info(address);
     	String name =  this.genPoster(address,picindex,fontparas);
+    	
+    	
     	JSONObject ret = new JSONObject();
     	ret.put("code", 0);
     	ret.put("url", "/images/poster/" + name);
@@ -104,9 +106,18 @@ public class PosterController {
     	//return suffix + "/index";
     }
     
+    
+    
     private String genPoster(String address,int picindex,int[] fontParas) {
     	if(address == null ) {
+    		//type
+    		//0: https://dictjson.tope365.com/ipeiyin/student/327307/20792/201910013932_share_g6j48lwv86_15692094903650.html?studentID=327307
+    		//1: https://dictjson.tope365.com/ipeiyin/oral/327307/2337/201910102253_share.html?studentID=327307
     		address = "https://dictjson.tope365.com/ipeiyin/student/327307/3730/201909301201_share_ovi9gaoaep_15524656839485.html?studentID=327307";
+    	}
+    	int type = 0;// 从当前页面获取图片
+    	if( address.startsWith("https://dictjson.tope365.com/ipeiyin/oral")) {
+    		type = 1;
     	}
     	int titleposX = fontParas[1];
     	int titleposY = fontParas[2];
@@ -117,13 +128,11 @@ public class PosterController {
     	String bookid = null;
     	String booktitle = null;
     	String bookname = null;
+    	String coverurl  =null;
         try {
             doc = Jsoup.connect(address).get();
             //logger.info("doc:" + doc);
-            
-            Element eleTitle = doc.getElementById("1");
-            booktitle = eleTitle.text();
-            logger.info(booktitle);
+           
             
             Pattern p = Pattern.compile("studentEbookID\\s+=\\s+(\\d+);");
             Matcher m = p.matcher(doc.toString()); // 获取 matcher 对象
@@ -144,122 +153,124 @@ public class PosterController {
 
             strtime = jsonData.getString("createTime").substring(0,10);
             bookname = jsonData.getString("ebookName");
+            coverurl = jsonData.getString("coverUrl");
             logger.info("bookName:" + bookname);
             logger.info("createTime:" + strtime);
             
-            
-            Elements container = doc.getElementsByClass("img_box");
-            Elements imgList = container.select("img");
-            int i = 0;
-            for(Element e : imgList) {
-            	imgs.add(e.attr("src"));
-            	logger.info(i + ":" + e.attr("src"));
+            if(type == 0) {
+	            Element eleTitle = doc.getElementById("1");
+	            booktitle = eleTitle.text();
+	            logger.info(booktitle);
+	            if( picindex > 1) {
+		            Elements container = doc.getElementsByClass("img_box");
+		            Elements imgList = container.select("img");
+		            int i = 0;
+		            for(Element e : imgList) {
+		            	imgs.add(e.attr("src"));
+		            	logger.info(i + ":" + e.attr("src"));
+		            }
+		            coverurl = imgs.get(picindex-1);
+	            }
+            }else if ( type == 1) {
+            	booktitle = bookname;
             }
+ 
             
         } catch (IOException e) {
-        	logger.error(e.getMessage());
+        	logger.error(e.getMessage(),e);
         }
        
-        if(imgs.size() > 0 ) {
-        	String imgurl = imgs.get(picindex-1);
-        	String rootLocation2 = ClassUtils.getDefaultClassLoader().getResource("").getPath();
-        	rootLocation2 += "static/images/poster";
-        	String tmpPath = rootLocation2 + "/template.png";
-        	String path = rootLocation2+ "/bg.jpeg";
-        	String qrcode = rootLocation2+"/qrcode.jpeg";
-        	String video = rootLocation2+"/video.png";
-        	
-        	SimpleDateFormat simpleDateFormat=new SimpleDateFormat("MMddHHmmss");
-        	
-        	SimpleDateFormat sdf =new SimpleDateFormat("yyyy.MM.dd");
-        	
-        	String time = strtime.length() >= 10 ? strtime.substring(0,10):sdf.format(new Date());
-        	
-        	logger.info("bookname len:",bookname);
-        	String mergeName = booktitle.replace(' ', '-').replaceAll("\\?", "") +"-"+ simpleDateFormat.format(new Date()) + ".png";
-        	String level = "";
-        	if(bookname.length()> 6 &&  bookname.startsWith("Level ")  ) {
-        		
-        		level = "LV"+bookname.substring(6,8);
-        		
-        	}
-        	mergeName = level + mergeName;
-        	String merge = rootLocation2 + "/" + mergeName;
-        	/*
-        	logger.info("tmpPath:" + tmpPath);
-        	logger.info("bg:" + path);
-        	logger.info("qrcode:" + qrcode);
-        	logger.info("merge:" + merge);
-        	*/
-        	orCode(address,qrcode);
-        	
-        	downloadPicture(imgurl,path);
-        	File tmpfile = new File(tmpPath) ;
-        	File bgfile = new File(path) ;
-        	File qrfile = new File(qrcode);
-        	File vdfile = new File(video);
-			try {
-				BufferedImage tmpBi = ImageIO.read(tmpfile);
-				BufferedImage bgBi = ImageIO.read(bgfile);
-				BufferedImage qrBi = ImageIO.read(qrfile);
-				BufferedImage qrVideo = ImageIO.read(vdfile);
+    
+    	String rootLocation2 = ClassUtils.getDefaultClassLoader().getResource("").getPath();
+    	rootLocation2 += "static/images/poster";
+    	String tmpPath = rootLocation2 + "/template.png";
+    	String path = rootLocation2+ "/bg.jpeg";
+    	String qrcode = rootLocation2+"/qrcode.jpeg";
+    	String video = rootLocation2+"/video.png";
+    	
+    	SimpleDateFormat simpleDateFormat=new SimpleDateFormat("MMddHHmmss");
+    	
+    	SimpleDateFormat sdf =new SimpleDateFormat("yyyy.MM.dd");
+    	
+    	String time = strtime.length() >= 10 ? strtime.substring(0,10):sdf.format(new Date());
+    	
+    	logger.info("bookname len:",bookname);
+    	String mergeName = booktitle.replace(' ', '-').replaceAll("\\?", "") +"-"+ simpleDateFormat.format(new Date()) + ".png";
+    	String level = "";
+    	if(bookname.length()> 6 &&  bookname.startsWith("Level ")  ) {
+    		
+    		level = "LV"+bookname.substring(6,8);
+    		
+    	}
+    	mergeName = level + mergeName;
+    	String merge = rootLocation2 + "/" + mergeName;
+    	/*
+    	logger.info("tmpPath:" + tmpPath);
+    	logger.info("bg:" + path);
+    	logger.info("qrcode:" + qrcode);
+    	logger.info("merge:" + merge);
+    	*/
+    	orCode(address,qrcode);
+    	
+    	downloadPicture(coverurl,path);
+    	File tmpfile = new File(tmpPath) ;
+    	File bgfile = new File(path) ;
+    	File qrfile = new File(qrcode);
+    	File vdfile = new File(video);
+		try {
+			BufferedImage tmpBi = ImageIO.read(tmpfile);
+			BufferedImage bgBi = ImageIO.read(bgfile);
+			BufferedImage qrBi = ImageIO.read(qrfile);
+			BufferedImage qrVideo = ImageIO.read(vdfile);
 
-				
-				Graphics2D g = tmpBi.createGraphics();
-				
-				//g.setPaint(new Color(248,253,247));
-				//g.fillRect(281, 255, 200, 288);
-				
-
-				
-				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-				g.drawImage(qrBi,380,30,150,150,null);
-				g.drawImage(qrVideo,440,90,30,30,null);
-				g.drawImage(bgBi,0,235,tmpBi.getWidth(),460,null);
-				
-				g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-				g.setPaint(Color.BLACK);
-				Font font = new Font("Courier", Font.TRUETYPE_FONT, 22);
-				g.setFont(font);
-				//env.getProperty(key)
-				g.drawString(time, 120, 180);
-				if (picindex>1) {
-					Font f = new Font("Arial Black", Font.TRUETYPE_FONT, fontSize);
-					
-					//g.setFont(f);
-					
-					//g.drawString(booktitle, titleposX, titleposY);
-					
-					FontRenderContext frc = new FontRenderContext(new AffineTransform(), false, false);
-				    GlyphVector v = f.createGlyphVector(frc, booktitle);
-				    Shape shape = v.getOutline();
-				 
-				    //Rectangle bounds = shape.getBounds();
-				 
-				    Graphics2D gg = (Graphics2D) g;
-				    
-				    gg.translate(titleposX, titleposY);
-				    gg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-				    gg.setColor(Color.WHITE);
-				    gg.fill(shape);
-				    gg.setColor(Color.BLUE.darker().darker());
-				    gg.setStroke(new BasicStroke(1));
-				    gg.draw(shape);
-				    
-				    
-				}
-				ImageIO.write(tmpBi, "png", new File(merge));
-				g.dispose();
 			
+			Graphics2D g = tmpBi.createGraphics();
+			
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g.drawImage(qrBi,380,30,150,150,null);
+			g.drawImage(qrVideo,440,90,30,30,null);
+			g.drawImage(bgBi,0,235,tmpBi.getWidth(),460,null);
+			
+			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+			g.setPaint(Color.BLACK);
+			Font font = new Font("Courier", Font.TRUETYPE_FONT, 22);
+			g.setFont(font);
+			//env.getProperty(key)
+			g.drawString(time, 120, 180);
+			if (picindex > 1 ) {
+				//添加标题
+				Font f = new Font("Arial Black", Font.TRUETYPE_FONT, fontSize);
+	
 				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				
-				logger.error(e.getMessage(),e);
+				FontRenderContext frc = new FontRenderContext(new AffineTransform(), false, false);
+			    GlyphVector v = f.createGlyphVector(frc, booktitle);
+			    Shape shape = v.getOutline();
+			
+			 
+			    Graphics2D gg = (Graphics2D) g;
+			    
+			    gg.translate(titleposX, titleposY);
+			    gg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			    gg.setColor(Color.WHITE);
+			    gg.fill(shape);
+			    gg.setColor(Color.BLUE.darker().darker());
+			    gg.setStroke(new BasicStroke(1));
+			    gg.draw(shape);
+			    
+			    
 			}
-			return mergeName;
-        }
-        return null;
+			ImageIO.write(tmpBi, "png", new File(merge));
+			g.dispose();
+		
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			
+			logger.error(e.getMessage(),e);
+		}
+		return mergeName;
+    
+
     }
     
     
