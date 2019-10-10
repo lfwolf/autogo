@@ -177,7 +177,7 @@ public class PosterController {
         	
         	logger.info("bookname len:",bookname);
         	String mergeName = booktitle.replace(' ', '-').replaceAll("\\?", "") +"-"+ simpleDateFormat.format(new Date()) + ".png";
-        	String level = bookname.replaceAll("\\s", "");
+        	String level = "";
         	if(bookname.length()> 6 &&  bookname.startsWith("Level ")  ) {
         		
         		level = "LV"+bookname.substring(6,8);
