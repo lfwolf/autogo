@@ -22,4 +22,11 @@
 hs_err_pid*
 .DS_Store
 
+# cpp
+*.out
+
+# dotnet
+bin/
+obj/
+
 **.vscode/
