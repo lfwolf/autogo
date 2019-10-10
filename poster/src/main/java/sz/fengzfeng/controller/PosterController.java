@@ -176,7 +176,7 @@ public class PosterController {
         	String time = strtime.length() >= 10 ? strtime.substring(0,10):sdf.format(new Date());
         	
         	logger.info("bookname len:",bookname);
-        	String mergeName = booktitle.replace(' ', '-') +"-"+ simpleDateFormat.format(new Date()) + ".png";
+        	String mergeName = booktitle.replace(' ', '-').replaceAll("\\?", "") +"-"+ simpleDateFormat.format(new Date()) + ".png";
         	String level = bookname.replaceAll("\\s", "");
         	if(bookname.length()> 6 &&  bookname.startsWith("Level ")  ) {
         		
