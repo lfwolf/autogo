@@ -161,7 +161,7 @@ public class PosterController {
 	            Element eleTitle = doc.getElementById("1");
 	            booktitle = eleTitle.text();
 	            logger.info(booktitle);
-	            if( picindex > 1) {
+	            if( picindex > 0) {
 		            Elements container = doc.getElementsByClass("img_box");
 		            Elements imgList = container.select("img");
 		            int i = 0;

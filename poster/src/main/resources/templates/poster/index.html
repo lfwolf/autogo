@@ -77,6 +77,10 @@
 				
 				let add = layui.$("#address").val();
 				console.log(add);
+				if(!add.startsWith("https://dictjson.tope365.com/ipeiyin")){
+					layer.alert('[ienglish听读地址]错误');
+					return;
+				}
 				let data = "address="+ add;
 				let picindex = layui.$("#picindex").val();
 				let titlepos = layui.$("#titlepos").val();
