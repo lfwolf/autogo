@@ -118,6 +118,9 @@ public class PosterController {
     	int type = 0;// 从当前页面获取图片
     	if( address.startsWith("https://dictjson.tope365.com/ipeiyin/oral")) {
     		type = 1;
+    	}else if (  address.startsWith("https://videopy.ipeiyinla.com/share")) {
+    		//视频配音
+    		type = 2;
     	}
     	int titleposX = fontParas[1];
     	int titleposY = fontParas[2];
@@ -171,7 +174,7 @@ public class PosterController {
 		            }
 		            coverurl = imgs.get(picindex-1);
 	            }
-            }else if ( type == 1) {
+            }else  {
             	booktitle = bookname;
             }
  
@@ -194,7 +197,7 @@ public class PosterController {
     	
     	String time = strtime.length() >= 10 ? strtime.substring(0,10):sdf.format(new Date());
     	
-    	logger.info("bookname len:",bookname);
+    	logger.info("bookname len:"+bookname);
     	String mergeName = booktitle.replace(' ', '-').replaceAll("\\?", "") +"-"+ simpleDateFormat.format(new Date()) + ".png";
     	String level = "";
     	if(bookname.length()> 6 &&  bookname.startsWith("Level ")  ) {
